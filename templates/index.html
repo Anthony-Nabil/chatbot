@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chatbot</title>
+  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
+  <link rel="stylesheet" href="../static/style.css">
+</head>
+
+<body>
+  <div class="chat-container">
+    <h1>Simple Chatbot</h1>
+    <div id="chatbox">
+      <div class="message bot-message">
+        <p>Hello! Ask me to convert units, get weather, or ask 'who made this?'. Type 'help' for examples.</p>
+      </div>
+    </div>
+    <form id="messageForm">
+      <input type="text" id="userInput" placeholder="Type your message..." autocomplete="off">
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <script>
+    const chatbox = document.getElementById('chatbox');
+    const messageForm = document.getElementById('messageForm');
+    const userInput = document.getElementById('userInput');
+
+    function appendMessage(sender, message) {
+      const messageDiv = document.createElement('div');
+      messageDiv.classList.add('message', sender === 'User' ? 'user-message' : 'bot-message');
+
+      // replace < and > with their string equivalents to prevent XSS
+      const sanitizedMessage = message.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+      const htmlMessage = sanitizedMessage.replace(/\n/g, '<br>');
+      messageDiv.innerHTML = `<p>${htmlMessage}</p>`;
+      chatbox.appendChild(messageDiv);
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    messageForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const messageText = userInput.value.trim();
+      if (!messageText) return;
+
+      appendMessage('User', messageText);
+      userInput.value = '';
+
+      try {
+        const response = await fetch('/chat', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({message: messageText}),
+        });
+        const data = await response.json();
+        appendMessage('Bot', data.response || "Sorry, error receiving response.");
+      } catch (error) {
+        console.error('Chat Error:', error);
+        appendMessage('Bot', 'Sorry, connection error.');
+      }
+    });
+  </script>
+</body>
+
+</html>
