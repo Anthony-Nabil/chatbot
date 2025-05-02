@@ -10,6 +10,11 @@ FORECAST_URL = "https://api.open-meteo.com/v1/forecast"
 
 TEAM_MEMBERS = [
     {"name": "Anthony Nabil Farag Boutros", "id": "20210065"},
+    {"name": "Laila Abdel Nasser Ahmed", "id": "20210380"},
+    {"name": "Mahmoud Saad Noman", "id": "20210263"},
+    {"name": "Mohamed Khaled Abdallah", "id": "20212489"},
+    {"name": "Omar Salah Mohamed", "id": "20210336"},
+    {"name": "Youssef Mohamed Ahmed", "id": "20210154"},
 ]
 
 chat_history = []
